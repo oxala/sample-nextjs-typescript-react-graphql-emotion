@@ -1,0 +1,13 @@
+overwrite: true
+schema: "./source/graphql/typeDefs/user.graphql"
+documents: "./source/graphql/typeDefs/user.graphql"
+generates:
+  source/gql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-resolvers"
+      - "typescript-react-apollo"
+    config:
+      scalars:
+        JSON: "{ [key: string]: any }"

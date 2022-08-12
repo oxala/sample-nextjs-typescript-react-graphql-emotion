@@ -1,0 +1,36 @@
+.DS_Store
+node_modules
+*.configbean
+pids
+log
+.cache
+.beans
+static
+dist
+*.log
+.telemetry.json
+telemetry.json
+restarts_*
+oom_1
+
+# static pages
+gh-pages
+storybook-static/
+
+# IDE
+.vscode
+.idea/
+
+# test reports
+.eslint-checkstyle.xml
+eslint.xml
+.coverage/
+coverage/
+junit.xml
+xunit.xml
+.next
+tsconfig*tsbuildinfo
+*.js
+*.jsx
+*.js.map
+*.jsx.map

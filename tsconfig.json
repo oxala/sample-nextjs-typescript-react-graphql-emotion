@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "CommonJS",
+    "lib": ["dom", "es2017", "dom.iterable"],
+    "allowJs": false,
+    "checkJs": false,
+    "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
+    "sourceMap": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "./",
+    "./next-env.d.ts",
+    "./node_modules/@emotion/react/types/css-prop.d.ts"
+  ],
+  "exclude": []
+}
