@@ -6,6 +6,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -21,12 +22,19 @@ export type Query = {
   getUser: User;
 };
 
+
+export type QueryGetUserArgs = {
+  id: Scalars['ID'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
 };
 
-export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetUserQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
 
 
 export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string } };
@@ -117,7 +125,7 @@ export type ResolversParentTypes = {
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  getUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -133,8 +141,8 @@ export type Resolvers<ContextType = any> = {
 
 
 export const GetUserDocument = gql`
-    query GetUser {
-  getUser {
+    query GetUser($id: ID!) {
+  getUser(id: $id) {
     id
   }
 }
@@ -152,10 +160,11 @@ export const GetUserDocument = gql`
  * @example
  * const { data, loading, error } = useGetUserQuery({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetUserQuery(baseOptions?: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+export function useGetUserQuery(baseOptions: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
       }

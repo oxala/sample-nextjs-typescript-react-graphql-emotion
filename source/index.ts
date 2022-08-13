@@ -27,6 +27,7 @@ const handle = app.getRequestHandler();
     ],
     csrfPrevention: true,
     cache: "bounded",
+    context: (req) => ({ req }),
   });
 
   await apolloServer.start();

@@ -55,7 +55,7 @@ export const withApollo = (Page: NextPage, { ssr = true } = {}) => {
     ...pageProps
   }) => {
     console.log("WITH APOLLO", typeof apolloClient, apolloState, pageProps);
-    const client = apolloClient || getClient({ apolloState });
+    let client = apolloClient || getClient({ apolloState });
 
     return (
       <ApolloProvider client={client}>
@@ -67,9 +67,9 @@ export const withApollo = (Page: NextPage, { ssr = true } = {}) => {
   if (ssr || Page.getInitialProps) {
     WithApollo.getInitialProps = async (context: NextPageContext) => {
       const { AppTree, req, res } = context;
-      const apolloClient = getClient({ schema: req.schema });
+      const apolloClient = getClient(req ? { schema: req.schema } : undefined);
       let apolloState: NormalizedCacheObject = {};
-      let pageProps: ComponentProps<typeof Page> = {};
+      let pageProps = {};
 
       // console.log("req.schema", req.schema);
 
@@ -88,14 +88,18 @@ export const withApollo = (Page: NextPage, { ssr = true } = {}) => {
         }
 
         if (ssr) {
-          await getDataFromTree(
-            <AppTree
-              pageProps={{
-                ...pageProps,
-                apolloClient,
-              }}
-            />
-          );
+          try {
+            await getDataFromTree(
+              <AppTree
+                pageProps={{
+                  ...pageProps,
+                  apolloClient,
+                }}
+              />
+            );
+          } catch (exception) {
+            exception;
+          }
 
           apolloState = apolloClient.cache.extract();
         }
@@ -110,3 +114,5 @@ export const withApollo = (Page: NextPage, { ssr = true } = {}) => {
 
   return WithApollo;
 };
+
+export const withApollo2 = (App: any) => {};
