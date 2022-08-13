@@ -1,15 +1,7 @@
-import { NextPage, NextPageContext } from "next";
+import { NextPage } from "next";
 import Link from "next/link";
 import { useGetUserQuery } from "../source/gql";
-import {
-  ApolloClient,
-  ApolloProvider,
-  InMemoryCache,
-  NormalizedCacheObject,
-} from "@apollo/client";
 import { withApollo } from "../source/apollo";
-import { withApollo as withApollo2 } from "../source/apollo2";
-import { Fragment } from "react";
 import Test from "../components/Test";
 
 const Page: NextPage = () => {

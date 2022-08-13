@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import { withApollo } from "../source/apollo";
-import { withApollo as withApollo2 } from "../source/apollo2";
 import { useGetUserQuery } from "../source/gql";
 
 const Page: NextPage = () => {

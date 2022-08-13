@@ -112,3 +112,5 @@ export const withApollo = (Page: NextPage, { ssr = true } = {}) => {
 
   return WithApollo;
 };
+
+export const withApollo2 = (App: any) => {};
