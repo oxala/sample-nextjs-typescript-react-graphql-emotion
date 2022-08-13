@@ -10,10 +10,4 @@ export const { typeDefs, resolvers } = {
   resolvers: mergeResolvers(resolversArray),
 };
 
-// export const test = async () =>
-//   stitchSchemas({
-//     typeDefs: await loadFiles("**/typeDefs/*.graphql"),
-//     resolvers: await loadFiles("**/resolvers/*.ts"),
-//   });
-
 export default stitchSchemas({ typeDefs, resolvers });

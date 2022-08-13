@@ -7,37 +7,36 @@ import {
 import { NextPage, NextPageContext } from "next";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 import { SchemaLink } from "@apollo/client/link/schema";
-import { GraphQLSchema } from "graphql";
 import { ComponentProps } from "react";
+import { GraphQLSchema } from "graphql";
 
 interface Props {
   apolloState?: NormalizedCacheObject;
   apolloClient?: ApolloClient<NormalizedCacheObject>;
 }
 
-let schema: GraphQLSchema;
 let cachedApolloClient: ApolloClient<NormalizedCacheObject>;
 
-// if (typeof window === "undefined") {
-//   (async () => {
-//     schema = (await import("../source/graphql/schema")).default;
-//     console.log("!!!SCHEMA", schema);
-//   })();
-// }
+const getClient = (
+  apolloState: NormalizedCacheObject = {},
+  config?: {
+    schema: GraphQLSchema;
+    context?: NextPageContext;
+  }
+) => {
+  const cache = new InMemoryCache().restore(apolloState);
 
-const getClient = ({ apolloState = {}, schema }: any = { apolloState: {} }) => {
-  if (typeof window === "undefined") {
+  if (config && typeof window === "undefined") {
     return new ApolloClient({
       ssrMode: true,
-      link: new SchemaLink({ schema }),
-      cache: new InMemoryCache(),
+      link: new SchemaLink(config),
+      cache,
     });
   }
 
   if (!cachedApolloClient) {
-    console.log("no cached client", apolloState);
     cachedApolloClient = new ApolloClient({
-      cache: new InMemoryCache().restore(apolloState),
+      cache,
       uri: "/api/v1/graphql",
       credentials: "same-origin",
     });
@@ -54,8 +53,7 @@ export const withApollo = (Page: NextPage, { ssr = true } = {}) => {
     apolloState,
     ...pageProps
   }) => {
-    console.log("WITH APOLLO", typeof apolloClient, apolloState, pageProps);
-    const client = apolloClient || getClient({ apolloState });
+    let client = apolloClient || getClient(apolloState);
 
     return (
       <ApolloProvider client={client}>
@@ -67,43 +65,47 @@ export const withApollo = (Page: NextPage, { ssr = true } = {}) => {
   if (ssr || Page.getInitialProps) {
     WithApollo.getInitialProps = async (context: NextPageContext) => {
       const { AppTree, req, res } = context;
-      const apolloClient = getClient({ schema: req.schema });
-      let apolloState: NormalizedCacheObject = {};
-      let pageProps: ComponentProps<typeof Page> = {};
-
-      // console.log("req.schema", req.schema);
+      const apolloClient = getClient(
+        undefined,
+        req
+          ? {
+              schema: (req as any).schema,
+              // schema: eval("require('../../../source/graphql/schema')")
+              //   .default as GraphQLSchema,
+              context,
+            }
+          : undefined
+      );
+      let pageProps = {};
 
       if (Page.getInitialProps) {
         pageProps = await Page.getInitialProps(context);
       }
 
       if (typeof window === "undefined") {
-        // require('../source/graphql/schema')
-        // console.log(
-        //   "EVAL",
-        //   eval("require('../../../source/graphql/schema')").default
-        // );
         if (res?.writableEnded) {
           return pageProps;
         }
 
         if (ssr) {
-          await getDataFromTree(
-            <AppTree
-              pageProps={{
-                ...pageProps,
-                apolloClient,
-              }}
-            />
-          );
-
-          apolloState = apolloClient.cache.extract();
+          try {
+            await getDataFromTree(
+              <AppTree
+                pageProps={{
+                  ...pageProps,
+                  apolloClient,
+                }}
+              />
+            );
+          } catch (exception) {
+            exception;
+          }
         }
       }
 
       return {
         ...pageProps,
-        apolloState,
+        apolloState: apolloClient.cache.extract(),
       };
     };
   }

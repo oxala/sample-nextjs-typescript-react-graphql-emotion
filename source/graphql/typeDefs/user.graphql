@@ -3,11 +3,11 @@ type User {
 }
 
 type Query {
-  getUser: User!
+  getUser(id: ID!): User!
 }
 
-query GetUser {
-  getUser {
+query GetUser($id: ID!) {
+  getUser(id: $id) {
     id
   }
 }

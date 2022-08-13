@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "CommonJS",
+    "module": "ESNext",
     "lib": ["dom", "es2017", "dom.iterable"],
     "allowJs": false,
     "checkJs": false,
@@ -22,10 +22,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": [
-    "./",
-    "./next-env.d.ts",
-    "./node_modules/@emotion/react/types/css-prop.d.ts"
-  ],
+  "include": ["./", "./next-env.d.ts"],
   "exclude": []
 }
